@@ -1,8 +1,12 @@
-FROM centos:latest
+FROM centos:latest 
 RUN yum update -y && yum install -y httpd \
-	 -y php php-mysql
+	-y php php-mysql
+RUN systemctl stop httpd.service
+
 ADD ./src/vhost.conf /etc/httpd/conf.d/default-vhost.conf
 ADD ./src/info.php /var/www/html/info.php
-EXPOSE 80
+EXPOSE 80 
 CMD /usr/sbin/httpd
 ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+
+CMD ["/usr/sbin/init"]

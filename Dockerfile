@@ -3,7 +3,7 @@ RUN yum update -y; yum install -y httpd; yum install -y mariadb-server mariadb; 
 
 ADD ./src/vhost.conf /etc/httpd/conf.d/default-vhost.conf	
 ADD ./src/info.php /var/www/html/info.php
-ADD ./src/snipe-it /var/www
+ADD ./src/snipe-it /var/www/
 EXPOSE 80 
 CMD /usr/sbin/httpd
 ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]

@@ -1,7 +1,6 @@
 FROM centos:latest 
-RUN yum update -y && yum install -y httpd \
-	-y php php-mysql
-RUN systemctl stop httpd.service
+RUN yum update -y; yum install -y httpd \
+	-y php php-mysql; systemctl stop httpd.service
 
 ADD ./src/vhost.conf /etc/httpd/conf.d/default-vhost.conf
 ADD ./src/info.php /var/www/html/info.php

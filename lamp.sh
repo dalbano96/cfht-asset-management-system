@@ -17,6 +17,10 @@ echo "Installing PHP libraries..."
 echo ""
 sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl
 
+echo "Installing mod_ssl"
+echo ""
+sudo yum -y install mod_ssl
+
 # import config files from snipeit and httpd
 echo "Importing Snipe-IT files"
 u="$USER"
@@ -25,6 +29,7 @@ echo ""
 
 echo "Importing Apache configuration files"
 cp -rf config/httpd /etc
+systemctl restart httpd.service
 
 # import mysql database
 # ...

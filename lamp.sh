@@ -26,8 +26,18 @@ echo ""
 echo "Creating non-root user with sudo privileges"
 defuser=snipeit-user
 sudo adduser ${defuser}
+echo "Enter password"
+read defpasswd
+echo "Confirm password"
+read defpasswd2
+if [[ $defpasswd = $defpasswd2 ]]
+then
+	echo "Passwords match!"
+else
+	exit
+fi
 echo "Setting user password..."
-passwd ${defuser}
+echo ${defpasswd} | sudo -S passwd ${defuser}
 
 
 # import config files from snipeit and httpd
@@ -134,19 +144,19 @@ then
 	fi
 fi
 
-# Configure snipe-it database.php file
+# Configure snipe-it database.php file - works
 echo Doing stuff
 sed -i "s/mysqldb/${dbname}/g" /home/${defuser}/snipe-it/app/config/production/database.php
 sed -i "s/mysqlpwd/${rootpasswd}/g" /home/${defuser}/snipe-it/app/config/production/database.php
 echo Stuff done
 
-# Configure snipe-it app.php file
-hstname=hostname
+# Configure snipe-it app.php file - hostname used literally
+hstname=$(hostname)
 sed -i "s/replaceserver/${hstname}/g" /home/${defuser}/snipe-it/app/config/production/app.php
 
 # Configure httpd virtualhost
-sed -i "s/replaceroot/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
-sed -i "s/replaceserver/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
+sed -i "s/replaceroot/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
+sed -i "s/replaceserver/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 
 # Configure app permissions
 chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
@@ -155,13 +165,13 @@ chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
 chmod -R 775 /home/${defuser}/snipe-it/public/uploads
 
 # Install Dependencies
-su ${defuser} << 'EOF'
 cd /home/${defuser}/snipe-it
-curl -sS https://getcomposer.org/installer | php
+su ${defuser} << 'EOF'
+echo ' | sudo curl -sS https://getcomposer.org/installer | php
 php composer.phar install --no-dev --prefer-source
 EOF
 
-# Initial install (work in progress alongside db import)
+# Initial install (work in progress alongside db import) - missing autoload.php file
 cd /home/${defuser}/snipe-it
 php artisan app:install --env=production
 

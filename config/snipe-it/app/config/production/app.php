@@ -26,7 +26,7 @@ return array(
     |
     */
 
-    'url' => 'https://inventory.cfht.hawaii.edu',
+    'url' => 'https://replaceserver',
 
 
     /*

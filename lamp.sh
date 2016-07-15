@@ -7,19 +7,16 @@ sudo yum -y install httpd
 sudo systemctl enable httpd.service
 sudo systemctl start httpd.service
 echo ""
-
 echo "Installing MySQL..."
 echo ""
 sudo yum -y install mariadb mariadb-server
 sudo systemctl enable mariadb.service
 sudo systemctl start mariadb.service
 echo ""
-
 echo "Installing PHP libraries..."
 echo ""
 sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl
 echo ""
-
 echo "Installing mod_ssl"
 echo ""
 sudo yum -y install mod_ssl
@@ -27,20 +24,23 @@ echo ""
 
 # create user with sudo priv set password as well
 echo "Creating non-root user with sudo privileges"
-sudo adduser snipeit-user
+defuser=snipeit-user
+sudo adduser ${defuser}
 echo "Setting user password..."
-passwd snipeit-user
+passwd ${defuser}
 
 
 # import config files from snipeit and httpd
 echo "Importing Snipe-IT files"
-u="$USER"
-cp -rf config/snipe-it /snipeit-user
+cp -rf config/snipe-it /home/${defuser}
 echo ""
-
 echo "Importing Apache configuration files"
 cp -rf config/httpd /etc
 systemctl restart httpd.service
+echo "Importing sudoers file"
+cp -f config/sudoers /etc
+echo "Importing iptables config"
+cp -f conf/iptables /etc/sysconfig
 
 # import database (y/n) 
 echo ""
@@ -133,3 +133,43 @@ then
 		echo ""
 	fi
 fi
+
+# Configure snipe-it database.php file
+echo Doing stuff
+sed -i "s/mysqldb/${dbname}/g" /home/${defuser}/snipe-it/app/config/production/database.php
+sed -i "s/mysqlpwd/${rootpasswd}/g" /home/${defuser}/snipe-it/app/config/production/database.php
+echo Stuff done
+
+# Configure snipe-it app.php file
+hstname=hostname
+sed -i "s/replaceserver/${hstname}/g" /home/${defuser}/snipe-it/app/config/production/app.php
+
+# Configure httpd virtualhost
+sed -i "s/replaceroot/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
+sed -i "s/replaceserver/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
+
+# Configure app permissions
+chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
+chmod -R 775 /home/${defuser}/snipe-it/app/storage
+chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
+chmod -R 775 /home/${defuser}/snipe-it/public/uploads
+
+# Install Dependencies
+su ${defuser} << 'EOF'
+cd /home/${defuser}/snipe-it
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install --no-dev --prefer-source
+EOF
+
+# Initial install (work in progress alongside db import)
+cd /home/${defuser}/snipe-it
+php artisan app:install --env=production
+
+
+
+
+
+
+
+
+

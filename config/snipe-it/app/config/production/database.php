@@ -55,9 +55,9 @@ return array(
         'mysql' => array(
             'driver'    => 'mysql',
             'host'      => 'localhost',
-            'database'  => 'cfht_snipeit',
+            'database'  => 'mysqldb',
             'username'  => 'root',
-            'password'  => '!akamai!',
+            'password'  => 'mysqlpwd',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',

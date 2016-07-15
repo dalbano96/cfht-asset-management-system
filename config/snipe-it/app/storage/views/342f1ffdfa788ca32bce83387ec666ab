@@ -1,0 +1,78 @@
+<?php /* Page title */ ?>
+<?php $__env->startSection('title'); ?>
+    <?php echo \Illuminate\Support\Facades\Lang::get('admin/settings/general.backups'); ?> ::
+@parent
+<?php $__env->stopSection(); ?>
+
+<?php /* Page content */ ?>
+<?php $__env->startSection('content'); ?>
+<div class="user-profile">
+                <!-- header -->
+
+
+                <div class="row-fluid profile">
+                    <!-- bio, new note & orders column -->
+                    <div class="col-md-9 bio">
+                        <h3 class="name"><?php echo \Illuminate\Support\Facades\Lang::get('admin/settings/general.backups'); ?></h3>
+                        <?php if(Config::get('app.lock_passwords')): ?>
+                           <p class="help-block"><?php echo \Illuminate\Support\Facades\Lang::get('general.feature_disabled'); ?></p>
+                        <?php endif; ?>
+
+                        <div class="profile-box">
+                            <br>
+                            <!-- Backups table -->
+
+                            <table class="table table-hover">
+                                <thead>
+                                    <th>File</th>
+                                    <th>Created</th>
+                                    <th>Size</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($files as $file): ?>
+                                    <tr>
+                                        <td><a href="backups/download/<?php echo e($file['filename']); ?>"><?php echo e($file['filename']); ?></a></td>
+                                        <td><?php echo e(date("M d, Y g:i A", $file['modified'])); ?> </td>
+                                        <td><?php echo e($file['filesize']); ?></td>
+                                        <td>
+                                            <a data-html="false"
+                                            class="btn delete-asset btn-danger btn-sm <?php echo (Config::get('app.lock_passwords')) ? ' disabled': ''; ?>" data-toggle="modal" href=" <?php echo route('settings/delete-file', $file['filename']); ?>" data-content="<?php echo \Illuminate\Support\Facades\Lang::get('admin/settings/message.backup.delete_confirm'); ?>" data-title="<?php echo Lang::get('general.delete'); ?>  <?php echo htmlspecialchars($file['filename']); ?> ?" onClick="return false;">
+                                                <i class="fa fa-trash icon-white"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                     <!-- side address column -->
+                    <div class="col-md-3 address pull-right">
+                        <br><br>
+
+                        <form method="POST">
+                          <?php echo Form::hidden('_token', csrf_token()); ?>
+
+
+                            <p>
+                                <button class="btn btn-default <?php echo (Config::get('app.lock_passwords')) ? ' disabled': ''; ?>"><?php echo \Illuminate\Support\Facades\Lang::get('admin/settings/general.generate_backup'); ?></button>
+                            </p>
+
+                             <?php if(Config::get('app.lock_passwords')): ?>
+                                <p class="help-block"><?php echo \Illuminate\Support\Facades\Lang::get('general.feature_disabled'); ?></p>
+                             <?php endif; ?>
+
+
+                        </form>
+                        <p>Backup files are located in: app/storage/dumps</p>
+
+
+
+                    </div>
+
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('backend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

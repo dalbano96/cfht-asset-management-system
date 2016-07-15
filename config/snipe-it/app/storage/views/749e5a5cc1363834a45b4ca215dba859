@@ -1,0 +1,91 @@
+<?php /* Page title */ ?>
+<?php $__env->startSection('title'); ?>
+Create a User ::
+@parent
+<?php $__env->stopSection(); ?>
+
+<?php /* Page content */ ?>
+<?php $__env->startSection('content'); ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#sync").click(function () {
+            $("#sync").removeClass("btn-warning");
+            $("#sync-button-icon").addClass("fa-spin");
+            $("#sync-button-text").html(" Processing...");
+        });
+    });
+</script>
+
+<div class="page-header">
+    <h3>
+        Create Users from LDAP
+
+        <div class="pull-right">
+            <a href="<?php echo route('users'); ?>" class="btn-flat gray pull-right"><i class="fa fa-arrow-circle-left icon-white"></i>  <?php echo \Illuminate\Support\Facades\Lang::get('general.back'); ?></a>
+
+        </div>
+    </h3>
+</div>
+
+<script type="text/javascript" src="<?php echo asset('/assets/js/pGenerator.jquery.js'); ?>"></script>
+
+<?php if(Setting::getSettings()->ldap_enabled == 0): ?>
+    <?php echo \Illuminate\Support\Facades\Lang::get('admin/users/message.ldap_not_configured'); ?>
+<?php else: ?>
+
+    <p>
+        <?php echo \Illuminate\Support\Facades\Lang::get('admin/users/general.ldap_text'); ?>
+    </p>
+    <p>
+        <?php echo \Illuminate\Support\Facades\Lang::get('admin/users/general.ldap_config_text'); ?>
+    </p>
+    <form class="form-horizontal" role="form" method="post" action="" id="ldap-form">
+        <!-- CSRF Token -->
+        <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>" />
+
+        <div class="form-group <?php echo $errors->has('location_id') ? 'has-error' : ''; ?>">
+                <label class="col-md-3 control-label" for="location_id"><?php echo \Illuminate\Support\Facades\Lang::get('admin/users/table.location'); ?>
+                    </label>
+                <div class="col-md-7">
+                    <?php echo Form::select('location_id', $location_list, array('class'=>'select2', 'style'=>'width:350px')); ?>
+
+                    <?php echo $errors->first('location_id', '<br><span class="alert-msg">:message</span>'); ?>
+
+                </div>
+            </div>
+        
+        <button type="submit" class="btn btn-warning" id="sync">
+            <i id="sync-button-icon" class="fa fa-refresh icon-white"></i> <span id="sync-button-text">Synchronize</span>
+        </button>
+        
+
+    </form>
+    <?php if(Session::get('summary')): ?>
+    <h3>Synchronization Results</h3>
+    <table class="table table-bordered">
+        <tr>
+            <th>Username</th><th>Employee Number</th>
+            <th>First Name</th><th>Last Name</th>
+            <th>Email</th><th>Notes</th>
+        </tr>
+        <?php
+        $summary = Session::get('summary');
+        foreach ($summary as $entry) {
+            echo "<tr>";
+            echo "<td>" . $entry['username'] . "</td>";
+            echo "<td>" . $entry['employee_number'] . "</td>";
+            echo "<td>" . $entry['firstname'] . "</td>";
+            echo "<td>" . $entry['lastname'] . "</td>";
+            echo "<td>" . $entry['email'] . "</td>";
+            echo "<td>" . $entry['note'] . "</td>";
+            echo "</tr>";
+        }
+        ?>
+    </table>
+    <?php endif; ?>
+<?php endif; ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('backend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

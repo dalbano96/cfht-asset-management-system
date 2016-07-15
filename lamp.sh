@@ -18,9 +18,8 @@ echo ""
 sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl
 
 # import config files from snipeit and httpd
-# ...
-# ...
-# ...
+u="$USER"
+cp -rf config/snipe-it /$u
 
 # import mysql database
 # ...
@@ -123,5 +122,3 @@ then
 		echo ""
 	fi
 fi
-
-# set permissions for files

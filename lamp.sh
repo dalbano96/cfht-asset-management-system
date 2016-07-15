@@ -164,11 +164,11 @@ chmod -R 775 /home/${defuser}/snipe-it/app/storage
 chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
 chmod -R 775 /home/${defuser}/snipe-it/public/uploads
 
-# Install Dependencies
+# Install Dependencies - requires sudo
 cd /home/${defuser}/snipe-it
 su ${defuser} << 'EOF'
-echo ' | sudo curl -sS https://getcomposer.org/installer | php
-php composer.phar install --no-dev --prefer-source
+echo '${defpasswd}' | sudo -S curl -sS https://getcomposer.org/installer | php
+echo '${defpasswd}' | sudo -S php composer.phar install --no-dev --prefer-source
 EOF
 
 # Initial install (work in progress alongside db import) - missing autoload.php file

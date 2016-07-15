@@ -37,8 +37,7 @@ else
 	exit
 fi
 echo "Setting user password..."
-echo ${defpasswd} | sudo -S passwd ${defuser}
-
+echo -e "${defpasswd}\n${defpasswd}" | passwd snipeit-user
 
 # import config files from snipeit and httpd
 echo "Importing Snipe-IT files"
@@ -155,20 +154,20 @@ hstname=$(hostname)
 sed -i "s/replaceserver/${hstname}/g" /home/${defuser}/snipe-it/app/config/production/app.php
 
 # Configure httpd virtualhost
-sed -i "s/replaceroot/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
+sed -i "s/replaceroot/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 sed -i "s/replaceserver/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 
 # Configure app permissions
-chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
-chmod -R 775 /home/${defuser}/snipe-it/app/storage
-chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
-chmod -R 775 /home/${defuser}/snipe-it/public/uploads
+echo '${defpasswd}\n' | sudo -S chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
+echo '${defpasswd}\n' | sudo -S chmod -R 775 /home/${defuser}/snipe-it/app/storage
+echo '${defpasswd}\n' | sudo -S chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
+echo '${defpasswd}\n' | sudo -S chmod -R 775 /home/${defuser}/snipe-it/public/uploads
 
 # Install Dependencies - requires sudo
 cd /home/${defuser}/snipe-it
 su ${defuser} << 'EOF'
-echo '${defpasswd}' | sudo -S curl -sS https://getcomposer.org/installer | php
-echo '${defpasswd}' | sudo -S php composer.phar install --no-dev --prefer-source
+echo '${defpasswd}\n' | sudo -S curl -sS https://getcomposer.org/installer | php
+echo '${defpasswd}\n' | sudo -S php composer.phar install --no-dev --prefer-source
 EOF
 
 # Initial install (work in progress alongside db import) - missing autoload.php file

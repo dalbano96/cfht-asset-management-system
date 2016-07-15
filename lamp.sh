@@ -18,8 +18,13 @@ echo ""
 sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl
 
 # import config files from snipeit and httpd
+echo "Importing Snipe-IT files"
 u="$USER"
 cp -rf config/snipe-it /$u
+echo ""
+
+echo "Importing Apache configuration files"
+cp -rf config/httpd /etc
 
 # import mysql database
 # ...

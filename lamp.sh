@@ -6,33 +6,41 @@ echo ""
 sudo yum -y install httpd
 sudo systemctl enable httpd.service
 sudo systemctl start httpd.service
+echo ""
 
 echo "Installing MySQL..."
 echo ""
 sudo yum -y install mariadb mariadb-server
 sudo systemctl enable mariadb.service
 sudo systemctl start mariadb.service
+echo ""
 
 echo "Installing PHP libraries..."
 echo ""
 sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl
+echo ""
 
 echo "Installing mod_ssl"
 echo ""
 sudo yum -y install mod_ssl
+echo ""
+
+# create user with sudo priv set password as well
+echo "Creating non-root user with sudo privileges"
+sudo adduser snipeit-user
+echo "Setting user password..."
+passwd snipeit-user
+
 
 # import config files from snipeit and httpd
 echo "Importing Snipe-IT files"
 u="$USER"
-cp -rf config/snipe-it /$u
+cp -rf config/snipe-it /snipeit-user
 echo ""
 
 echo "Importing Apache configuration files"
 cp -rf config/httpd /etc
 systemctl restart httpd.service
-
-# creating a user with sudo privileges
-sudo adduser --group sudo snipeit-user
 
 # import database (y/n) 
 echo ""

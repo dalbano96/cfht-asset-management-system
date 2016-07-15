@@ -1,0 +1,6 @@
+[2016-07-09 07:48:44] production.DEBUG: Not logged in - admin-auth [] []
+[2016-07-09 07:48:56] production.DEBUG: LDAP is enabled. [] []
+[2016-07-09 07:48:56] production.DEBUG: Sentry lookup complete [] []
+[2016-07-09 07:48:56] production.DEBUG: Local user albano exists in database. Authenticating existing user against LDAP. [] []
+[2016-07-09 07:48:56] production.DEBUG: Valid LDAP login. Updating the local data. [] []
+[2016-07-09 07:48:56] production.DEBUG: Authenticating user against database. [] []

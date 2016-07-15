@@ -1,0 +1,13 @@
+<?php $__env->startSection('content'); ?>
+
+<p>A user has requested an asset on the <a href="<?php echo Config::get('app.url'); ?>"><?php echo e(Setting::getSettings()->site_name); ?> website</a>. </p>
+
+<p>User: <a href="<?php echo Config::get('app.url'); ?>/admin/users/<?php echo e($user_id); ?>/view"><?php echo e($requested_by); ?></a><br>
+Asset: <a href="<?php echo Config::get('app.url'); ?>/hardware/<?php echo e($asset_id); ?>/view"><?php echo e($asset_name); ?></a> (<?php echo e($asset_type); ?>) <br>
+Requested: <?php echo e($requested_date); ?>
+
+</p>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('emails/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

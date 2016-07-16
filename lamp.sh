@@ -49,7 +49,7 @@ systemctl restart httpd.service
 echo "Importing sudoers file"
 cp -f config/sudoers /etc
 echo "Importing iptables config"
-cp -f conf/iptables /etc/sysconfig
+cp -f config/iptables /etc/sysconfig
 
 # import database (y/n) 
 echo ""

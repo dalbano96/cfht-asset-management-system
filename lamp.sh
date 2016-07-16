@@ -51,6 +51,11 @@ cp -f config/sudoers /etc
 echo "Importing iptables config"
 cp -f config/iptables /etc/sysconfig
 
+# restarting httpd, iptables, and mariadb
+sudo systemctl restart httpd.service
+sudo systemctl restart iptables.service
+sudo systemctl restart mariadb.service
+
 # import database (y/n) 
 echo ""
 echo Would you like to import another database [y/n]?	
@@ -60,9 +65,33 @@ do
 	echo Please try again [y/n]
 	read input
 done
+
+########################################################
+
 if [[ $input = "y" ||  $input = "Y" ]]
 then
-	echo "work in progress"
+	echo "Importing database..."
+	cd /home/snipeit-user/snipe-it/app/storage/dumps
+
+	prompt="Please select a file:"
+	options=( $(find -maxdepth 1 -print0 | xargs -0) )
+
+	PS3="$prompt "
+	select opt in "${options[@]}" "Quit"; 
+	do
+    		if (( REPLY == 1 + ${#options[@]} )) ; 
+		then exit
+    		elif (( REPLY > 0 && REPLY <= ${#options[@]} )); 
+		then echo  "You picked $opt which is file $REPLY"
+      		break
+    		else echo "Invalid option. Try another one."
+    		fi
+	done
+	ls -ld $opt
+
+########################################################
+
+	
 elif [[ $input = "n" ||  $input = "N" ]];
 then
 	echo "Change MySQL root password [y/n]?"

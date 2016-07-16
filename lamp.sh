@@ -156,21 +156,32 @@ sed -i "s/replaceserver/${hstname}/g" /home/${defuser}/snipe-it/app/config/produ
 # Configure httpd virtualhost
 sed -i "s/replaceroot/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 sed -i "s/replaceserver/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
+echo "Done as well!"
 
 # Configure app permissions
-echo '${defpasswd}\n' | sudo -S chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
-echo '${defpasswd}\n' | sudo -S chmod -R 775 /home/${defuser}/snipe-it/app/storage
-echo '${defpasswd}\n' | sudo -S chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
-echo '${defpasswd}\n' | sudo -S chmod -R 775 /home/${defuser}/snipe-it/public/uploads
+chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
+chmod -R 775 /home/${defuser}/snipe-it/app/storage
+chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
+chmod -R 775 /home/${defuser}/snipe-it/public/uploads
 
 # Install Dependencies - requires sudo
+echo Installing dependencies
 cd /home/${defuser}/snipe-it
-su ${defuser} << 'EOF'
-echo '${defpasswd}\n' | sudo -S curl -sS https://getcomposer.org/installer | php
-echo '${defpasswd}\n' | sudo -S php composer.phar install --no-dev --prefer-source
-EOF
+#su ${defuser} << 'EOF'
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install --no-dev --prefer-source
+
+# Generate app key
+echo Generating app key
+cd /home/${defuser}/snipe-it
+php artisan key:generate > appkey.txt
+perl -lne 'print $1 while (/\[(.*?)\]/g)' appkey.txt > output.txt
+appkey=`cat output.txt`
+echo $appkey
+sed -i "s/Change_this_key_or_snipe_will_get_ya/${appkey}/g" /home/${defuser}/snipe-it/app/config/production/app.php
 
 # Initial install (work in progress alongside db import) - missing autoload.php file
+echo Installing application
 cd /home/${defuser}/snipe-it
 php artisan app:install --env=production
 

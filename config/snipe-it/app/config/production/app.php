@@ -53,6 +53,6 @@ return array(
     | Run a php artisan key:generate --env=staging to create a random one
     */
 
-    'key' => 'QiARACtvQRMK3D7oc3XdKb6Zp5WR5sUv',
+    'key' => 'Change_this_key_or_snipe_will_get_ya',
 
 );

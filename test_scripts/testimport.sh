@@ -20,5 +20,6 @@ select opt in "${options[@]}" "Quit" ; do
 done    
 
 ls -ld $opt
-unzip $opt
-mysql -u root -p whatislife < /home/snipeit-user/snipe-it/app/storage/dumps/database/20160714120102-db.sql
+unzip $opt > /root/cfht_asset_management/test_scripts/selectedout.txt
+
+mysql -u root -p whatislife < /home/snipeit-user/snipe-it/app/storage/dumps/database/${unopt}

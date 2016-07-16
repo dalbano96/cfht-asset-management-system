@@ -21,6 +21,9 @@ echo "Installing mod_ssl"
 echo ""
 sudo yum -y install mod_ssl
 echo ""
+sudo yum -y install unzip
+sudo systemctl start unzip
+echo ""
 
 # create user with sudo priv set password as well
 echo "Creating non-root user with sudo privileges"
@@ -88,6 +91,8 @@ then
     		fi
 	done
 	ls -ld $opt
+	unzip -d $opt
+	
 
 ########################################################
 
@@ -189,9 +194,14 @@ echo "Done as well!"
 
 # Configure app permissions
 chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
-chmod -R 775 /home/${defuser}/snipe-it/app/storage
-chmod -R 775 /home/${defuser}/snipe-it/app/private_uploads
-chmod -R 775 /home/${defuser}/snipe-it/public/uploads
+chmod -R 777 /home/${defuser}/snipe-it/app/storage
+chmod -R 777 /home/${defuser}/snipe-it/app/private_uploads
+chmod -R 777 /home/${defuser}/snipe-it/public/uploads
+
+# Restart LAMP
+sudo systemctl restart httpd.service
+sudo systemctl restart mariadb.service
+sudo systemctl restart iptables.service
 
 # Install Dependencies - requires sudo
 echo Installing dependencies

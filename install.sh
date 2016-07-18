@@ -215,7 +215,7 @@ sudo systemctl restart mariadb.service
 sudo systemctl restart iptables.service
 
 # If user did not import database, snipe-it will create a new one
-if [ toggle -eq 0 ];
+if [ $toggle -eq 0 ];
 then
 	# Install Dependencies - requires sudo
 	echo Installing dependencies

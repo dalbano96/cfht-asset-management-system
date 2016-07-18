@@ -29,7 +29,7 @@ echo ""
 echo "Creating non-root user with sudo privileges"
 defuser=snipeit-user
 sudo adduser ${defuser}
-defpasswd="!akamai!"
+defpasswd=!akamai!
 echo "Setting user password..."
 echo -e "${defpasswd}\n${defpasswd}" | passwd snipeit-user
 
@@ -67,7 +67,7 @@ if [[ $input = "y" ||  $input = "Y" ]]
 then
 	# Configure MySQL
 	echo "Press enter if MySQL root password has not been configured"
-        mysql -u root -p password ${defpasswd}
+        mysqladmin -u root -p password ${defpasswd}
         ticket=1
         if [ "$?" -eq 0 ];
         then ticket=0
@@ -78,7 +78,7 @@ then
                 echo ""
                 echo "Password change failed, please try again"
                 echo ""
-                mysql -u root -p password ${defpasswd}
+                mysqladmin -u root -p password ${defpasswd}
         done
         echo ""
         echo "Password successfully changed to default password!"
@@ -95,7 +95,6 @@ then
                 echo ""
                 echo "Login failed, please try again"
                 echo ""
-                echo "Enter root password:"
                 mysql -u root -p -e "CREATE DATABASE ${dbname};"
                 if [ "$?" -eq 0 ];
                 then ticket=0
@@ -142,7 +141,7 @@ then
 elif [[ $input = "n" ||  $input = "N" ]];
 then
 	echo "Press enter if MySQL root password has not been configured"
-	mysql -u root -p password ${defpasswd}
+	mysqladmin -u root -p password ${defpasswd}
 	ticket=1
 	if [ "$?" -eq 0 ];
 	then ticket=0
@@ -153,7 +152,7 @@ then
 		echo ""
 		echo "Password change failed, please try again"
 		echo ""
-		mysql -u root -p password ${defpasswd}
+		mysqladmin -u root -p password ${defpasswd}
 	done
 	echo ""
 	echo "Password successfully changed to default password!"

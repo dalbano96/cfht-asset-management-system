@@ -61,14 +61,12 @@ do
 done
 
 dbname=snipeit
-toggle=1
 
 if [[ $input = "y" ||  $input = "Y" ]]
 then
 	# Configure MySQL
 	echo "Press enter if MySQL root password has not been configured"
         mysqladmin -u root -p password ${defpasswd}
-        ticket=1
         if [ "$?" -eq 0 ];
         then ticket=0
         else ticket=1
@@ -79,13 +77,16 @@ then
                 echo "Password change failed, please try again"
                 echo ""
                 mysqladmin -u root -p password ${defpasswd}
+		if [ "$?" -eq 0 ];
+        	then ticket=0
+        	else ticket=1
+        	fi
         done
         echo ""
         echo "Password successfully changed to default password!"
         echo ""
         echo "Creating database..."
         mysql -u root -p${defpasswd} -e "CREATE DATABASE ${dbname};"
-        ticket=1
         if [ "$?" -eq 0 ];
         then ticket=0
         else ticket=1
@@ -144,7 +145,6 @@ elif [[ $input = "n" ||  $input = "N" ]];
 then
 	echo "Press enter if MySQL root password has not been configured"
 	mysqladmin -u root -p password ${defpasswd}
-	ticket=1
 	if [ "$?" -eq 0 ];
 	then ticket=0
 	else ticket=1
@@ -155,13 +155,16 @@ then
 		echo "Password change failed, please try again"
 		echo ""
 		mysqladmin -u root -p password ${defpasswd}
+		if [ "$?" -eq 0 ];
+        	then ticket=0
+        	else ticket=1
+        	fi
 	done
 	echo ""
 	echo "Password successfully changed to default password!"
 	echo ""
 	echo "Creating database..."
 	mysql -u root -p${defpasswd} -e "CREATE DATABASE ${dbname};"
-	ticket=1
 	if [ "$?" -eq 0 ];
 	then ticket=0
 	else ticket=1

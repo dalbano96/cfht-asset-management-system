@@ -66,7 +66,7 @@ toggle=1
 if [[ $input = "y" ||  $input = "Y" ]]
 then
 	# Configure MySQL
-	echo "Press enter if MySQL root password has not been configured
+	echo "Press enter if MySQL root password has not been configured"
         mysql -u root -p password ${defpasswd}
         ticket=1
         if [ "$?" -eq 0 ];
@@ -141,7 +141,7 @@ then
 	
 elif [[ $input = "n" ||  $input = "N" ]];
 then
-	echo "Press enter if MySQL root password has not been configured
+	echo "Press enter if MySQL root password has not been configured"
 	mysql -u root -p password ${defpasswd}
 	ticket=1
 	if [ "$?" -eq 0 ];

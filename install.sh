@@ -212,7 +212,6 @@ echo ""
 
 # Configure app permissions
 echo "Configuring app permissions"
-echo ""
 chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
 chmod -R 777 /home/${defuser}/snipe-it/app/storage
 chmod -R 777 /home/${defuser}/snipe-it/app/private_uploads

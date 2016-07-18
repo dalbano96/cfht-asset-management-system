@@ -29,16 +29,7 @@ echo ""
 echo "Creating non-root user with sudo privileges"
 defuser=snipeit-user
 sudo adduser ${defuser}
-echo "Enter password"
-read defpasswd
-echo "Confirm password"
-read defpasswd2
-if [[ $defpasswd = $defpasswd2 ]]
-then
-	echo "Passwords match!"
-else
-	exit
-fi
+defpasswd="!akamai!"
 echo "Setting user password..."
 echo -e "${defpasswd}\n${defpasswd}" | passwd snipeit-user
 
@@ -69,10 +60,52 @@ do
 	read input
 done
 
-########################################################
+dbname=snipeit
+toggle=1
 
 if [[ $input = "y" ||  $input = "Y" ]]
 then
+	# Configure MySQL
+	echo "Press enter if MySQL root password has not been configured
+        mysql -u root -p password ${defpasswd}
+        ticket=1
+        if [ "$?" -eq 0 ];
+        then ticket=0
+        else ticket=1
+        fi
+        while [ $ticket != 0 ]
+        do
+                echo ""
+                echo "Password change failed, please try again"
+                echo ""
+                mysql -u root -p password ${defpasswd}
+        done
+        echo ""
+        echo "Password successfully changed to default password!"
+        echo ""
+        echo "Creating database..."
+        mysql -u root -p${defpasswd} -e "CREATE DATABASE ${dbname};"
+        ticket=1
+        if [ "$?" -eq 0 ];
+        then ticket=0
+        else ticket=1
+        fi
+        while [ $ticket != 0 ]
+        do
+                echo ""
+                echo "Login failed, please try again"
+                echo ""
+                echo "Enter root password:"
+                mysql -u root -p -e "CREATE DATABASE ${dbname};"
+                if [ "$?" -eq 0 ];
+                then ticket=0
+                else ticket=1
+                fi
+        done
+        echo ""
+        echo "Database successfully created!"
+
+	# Import database and set app key
 	sudo yum -y install unzip
 	cd /home/snipeuser-it/snipe-it/app/storage/dumps
 	
@@ -100,92 +133,58 @@ then
 	mysqlfile=`awk -F '/' 'NR==2 {print $2}' output.txt`
 	
 	# Import into MySQL and Snipe-IT
-	mysql -u root -p
+	###mysql -u root -p
 
-########################################################
-
+	origappkey=QiARACtvQRMK3D7oc3XdKb6Zp5WR5sUv
+	sed -i "s/Change_this_key_or_snipe_will_get_ya/${origappkey}/g" /home/${defuser}/snipe-it/app/config/production/app.php
+	toggle=1
 	
 elif [[ $input = "n" ||  $input = "N" ]];
 then
-	echo "Change MySQL root password [y/n]?"
-	read input
-	if [[ $input = "n" || $input = "N" ]]; then
-		ticket=1
-		echo "Please enter the NAME of the new database!"
-		read dbname
-		echo "Enter root password:"
-		read rootpasswd
-		echo "Creating new database..."
-		mysql -u root -p${rootpasswd} -e "CREATE DATABASE ${dbname};"
-		if [ "$?" -eq 0 ];
-		then ticket=0
-		else ticket=1
-		fi
-		while [ $ticket != 0 ]
-		do
-			echo ""
-			echo "Login failed, please try again"
-			echo ""
-			echo "Enter root password:"
-			read rootpasswd
-			mysql -u root -p${rootpasswd} -e "CREATE DATABASE ${dbname};"
-			if [ "$?" -eq 0 ];
-			then ticket=0
-			else ticket=1
-			fi
-		done
-		echo ""
-		echo "Database successfully created!"
-		echo "Showing existing databases..."
-		mysql -u root -p${rootpasswd} -e "show databases;"
-		if [ "$?" -eq 0 ];
-		then ticket=0
-		else ticket=1
-		fi
-		echo ""
-
-	else
-		ticket=1
-		echo "Enter current password:"
-		read oldpasswd
-		echo "Enter new password:"
-		read rootpasswd
-		echo "Changing root password..."
-		mysqladmin -u root -p${oldpasswd} password ${rootpasswd}
-		if [ "$?" -eq 0  ];
-		then ticket=0
-		else ticket=1
-		fi
-		while [ $ticket != 0 ]
-		do
-			echo ""
-			echo "Login Failed, please try again"
-			echo "Enter current password:"
-			read oldpasswd
-			echo "Enter new password:"
-			read rootpasswd
-			mysqladmin -u root -p${oldpasswd} password ${rootpasswd}
-			if [ "$?" -eq 0 ];
-			then ticket=0
-			else ticket=1
-			fi
-		done
-		echo ""
-		echo Success! MySQL root password has been set to $rootpasswd
-		echo "Please enter the NAME of the new database!"
-		read dbname
-		echo "Creating new database..."
-		mysql -u root -p${rootpasswd} -e "CREATE DATABASE ${dbname};"
-		echo ""
-		echo "Database successfully created!"
-		echo ""
-		echo "Showing existing databases..."
-		mysql -u root -p${rootpasswd} -e "show databases;"
-		echo ""
+	echo "Press enter if MySQL root password has not been configured
+	mysql -u root -p password ${defpasswd}
+	ticket=1
+	if [ "$?" -eq 0 ];
+	then ticket=0
+	else ticket=1
 	fi
+	while [ $ticket != 0 ]
+	do
+		echo ""
+		echo "Password change failed, please try again"
+		echo ""
+		mysql -u root -p password ${defpasswd}
+	done
+	echo ""
+	echo "Password successfully changed to default password!"
+	echo ""
+	echo "Creating database..."
+	mysql -u root -p${defpasswd} -e "CREATE DATABASE ${dbname};"
+	ticket=1
+	if [ "$?" -eq 0 ];
+	then ticket=0
+	else ticket=1
+	fi
+	while [ $ticket != 0 ]
+	do
+		echo ""
+		echo "Login failed, please try again"
+		echo ""
+		echo "Enter root password:"
+		mysql -u root -p -e "CREATE DATABASE ${dbname};"
+		if [ "$?" -eq 0 ];
+		then ticket=0
+		else ticket=1
+		fi
+	done
+	echo ""
+	echo "Database successfully created!"
+	echo ""
+
+	toggle=0
 fi
 
-# Configure snipe-it database.php file - works
+# Configure snipe-it database.php file
 echo Doing stuff
 sed -i "s/mysqldb/${dbname}/g" /home/${defuser}/snipe-it/app/config/production/database.php
 sed -i "s/mysqlpwd/${rootpasswd}/g" /home/${defuser}/snipe-it/app/config/production/database.php
@@ -211,32 +210,34 @@ sudo systemctl restart httpd.service
 sudo systemctl restart mariadb.service
 sudo systemctl restart iptables.service
 
-# Install Dependencies - requires sudo
-echo Installing dependencies
-cd /home/${defuser}/snipe-it
-#su ${defuser} << 'EOF'
-curl -sS https://getcomposer.org/installer | php
-php composer.phar install --no-dev --prefer-source
+# If user did not import database, snipe-it will create a new one
+if [ toggle -eq 0 ];
+then
+	# Install Dependencies - requires sudo
+	echo Installing dependencies
+	cd /home/${defuser}/snipe-it
+	#su ${defuser} << 'EOF'
+	curl -sS https://getcomposer.org/installer | php
+	php composer.phar install --no-dev --prefer-source
 
-# Generate app key
-echo Generating app key
-cd /home/${defuser}/snipe-it
-php artisan key:generate > appkey.txt
-perl -lne 'print $1 while (/\[(.*?)\]/g)' appkey.txt > output.txt
-appkey=`cat output.txt`
-echo $appkey
-sed -i "s/Change_this_key_or_snipe_will_get_ya/${appkey}/g" /home/${defuser}/snipe-it/app/config/production/app.php
+	# Generate app key
+	echo Generating app key
+	cd /home/${defuser}/snipe-it
+	php artisan key:generate > appkey.txt
+	perl -lne 'print $1 while (/\[(.*?)\]/g)' appkey.txt > output.txt
+	appkey=`cat output.txt`
+	echo $appkey
+	sed -i "s/Change_this_key_or_snipe_will_get_ya/${appkey}/g" /home/${defuser}/snipe-it/app/config/production/app.php
+	
+	# Initial install (work in progress alongside db import) - missing autoload.php file
+	echo Installing application
+	cd /home/${defuser}/snipe-it
+	php artisan app:install --env=production
 
-# Initial install (work in progress alongside db import) - missing autoload.php file
-echo Installing application
-cd /home/${defuser}/snipe-it
-php artisan app:install --env=production
-
-
-
-
-
+else break
+fi
 
 
-
-
+echo ""
+echo "Snipe-IT web app has been configured. You are ready to go"
+echo ""

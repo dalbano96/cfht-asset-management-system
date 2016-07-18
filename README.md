@@ -6,4 +6,4 @@ The installation script will only work for initial installation of the asset man
 
 When the script is executed, it will use the local machine as the primary domain to host the web application. As a result, the URL (https://inventory.cfht.hawaii.edu) would have to be affiliated with the domain that is hosting the application. The primary purpose of the installation script is to allow for quick and easy configuration of the asset management system.
 
-Snipe-IT asset management system developed by Snipe
+Snipe-IT asset management system developed by Snipe (https://github.com/snipe)

@@ -73,7 +73,34 @@ done
 
 if [[ $input = "y" ||  $input = "Y" ]]
 then
+	sudo yum -y install unzip
+	cd /home/snipeuser-it/snipe-it/app/storage/dumps
 	
+	# User selects file
+	prompt="Please select a file:"
+	options=( $(find -maxdepth 1 -print0 | xargs -0) )
+	PS3="$prompt "
+	select opt in "${options[@]}" "Quit" ; do
+		if (( REPLY == 1 + ${#options[@]} ));
+		then exit
+		elif (( REPLY > 0 && REPLY <= ${options[@]} ));
+		then
+			echo "You picked $opt which is file $REPLY"
+			break
+		else
+			echo "Invalid option. Try another one."
+		fi
+	done
+	ls -ld $opt	
+
+	# Unzip file and store output as text file
+	unzip $opt > output.txt
+	
+	# Retrieve unzipped filname
+	mysqlfile=`awk -F '/' 'NR==2 {print $2}' output.txt`
+	
+	# Import into MySQL and Snipe-IT
+	mysql -u root -p
 
 ########################################################
 

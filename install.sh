@@ -252,7 +252,6 @@ then
 	
 	# Initial install (work in progress alongside db import) - missing autoload.php file
 	echo "Final step..."
-	echo ""
 	echo Installing application
 	cd /home/${defuser}/snipe-it
 	php artisan app:install --env=production
@@ -260,6 +259,11 @@ then
 	echo ""
 fi
 
+# Make user directory in home executable
+echo "Making user directory in home executable"
+chmod +x /home/${defuser}
+echo "Done"
+echo ""
 
 echo ""
 echo "Snipe-IT web app has been configured. You are ready to go"

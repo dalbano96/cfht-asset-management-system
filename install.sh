@@ -66,7 +66,7 @@ if [[ $input = "y" ||  $input = "Y" ]]
 then
 	# Configure MySQL
 	echo "Press enter if MySQL root password has not been configured"
-        mysqladmin -u root -p password ${defpasswd}
+        mysqladmin -u root -p${defpasswd} password ${defpasswd}
         if [ "$?" -eq 0 ];
         then ticket=0
         else ticket=1
@@ -104,6 +104,7 @@ then
         done
         echo ""
         echo "Database successfully created!"
+	echo ""
 
 	# Import database and set app key
 	sudo yum -y install unzip
@@ -144,7 +145,7 @@ then
 elif [[ $input = "n" ||  $input = "N" ]];
 then
 	echo "Press enter if MySQL root password has not been configured"
-	mysqladmin -u root -p password ${defpasswd}
+	mysqladmin -u root -p${defpasswd} password ${defpasswd}
 	if [ "$?" -eq 0 ];
 	then ticket=0
 	else ticket=1

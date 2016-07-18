@@ -190,54 +190,78 @@ then
 fi
 
 # Configure snipe-it database.php file
-echo Doing stuff
+echo "Configuring database.php..."
+echo ""
 sed -i "s/mysqldb/${dbname}/g" /home/${defuser}/snipe-it/app/config/production/database.php
 sed -i "s/mysqlpwd/${rootpasswd}/g" /home/${defuser}/snipe-it/app/config/production/database.php
-echo Stuff done
+echo "Done"
+echo ""
 
 # Configure snipe-it app.php file - hostname used literally
+echo "Configuring app.php hostname..."
+echo ""
 hstname=$(hostname)
 sed -i "s/replaceserver/${hstname}/g" /home/${defuser}/snipe-it/app/config/production/app.php
+echo "Done"
+echo ""
 
 # Configure httpd virtualhost
+echo "Configuring VirtuaHost..."
+echo ""
 sed -i "s/replaceroot/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 sed -i "s/replaceserver/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
-echo "Done as well!"
+echo "Done"
+echo ""
 
 # Configure app permissions
+echo "Configuring app permissions"
+echo ""
 chown -R ${defuser}:${defuser} /home/${defuser}/snipe-it/app/storage /home/${defuser}/snipe-it/app/private_uploads /home/${defuser}/snipe-it/public/uploads
 chmod -R 777 /home/${defuser}/snipe-it/app/storage
 chmod -R 777 /home/${defuser}/snipe-it/app/private_uploads
 chmod -R 777 /home/${defuser}/snipe-it/public/uploads
+echo "Done"
+echo ""
 
 # Restart LAMP
+echo "Restarting LAMP stack..."
 sudo systemctl restart httpd.service
 sudo systemctl restart mariadb.service
 sudo systemctl restart iptables.service
+echo "Done"
+echo ""
+
+# Install Dependencies - requires sudo
+echo "Installing dependencies..."
+echo ""
+cd /home/${defuser}/snipe-it
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install --no-dev --prefer-source
+echo "Done"
+echo ""
 
 # If user did not import database, snipe-it will create a new one
 if [ $toggle -eq 0 ];
 then
-	# Install Dependencies - requires sudo
-	echo Installing dependencies
-	cd /home/${defuser}/snipe-it
-	#su ${defuser} << 'EOF'
-	curl -sS https://getcomposer.org/installer | php
-	php composer.phar install --no-dev --prefer-source
-
 	# Generate app key
-	echo Generating app key
+	echo "Generating app key..."
 	cd /home/${defuser}/snipe-it
 	php artisan key:generate > appkey.txt
 	perl -lne 'print $1 while (/\[(.*?)\]/g)' appkey.txt > output.txt
 	appkey=`cat output.txt`
 	echo $appkey
 	sed -i "s/Change_this_key_or_snipe_will_get_ya/${appkey}/g" /home/${defuser}/snipe-it/app/config/production/app.php
+	echo "Done"
+	echo ""
 	
 	# Initial install (work in progress alongside db import) - missing autoload.php file
+	echo "Final step..."
+	echo ""
 	echo Installing application
 	cd /home/${defuser}/snipe-it
 	php artisan app:install --env=production
+	echo "Done"
+	echo ""
 fi
 
 

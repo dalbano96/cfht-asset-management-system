@@ -191,15 +191,13 @@ fi
 
 # Configure snipe-it database.php file
 echo "Configuring database.php..."
-echo ""
 sed -i "s/mysqldb/${dbname}/g" /home/${defuser}/snipe-it/app/config/production/database.php
-sed -i "s/mysqlpwd/${rootpasswd}/g" /home/${defuser}/snipe-it/app/config/production/database.php
+sed -i "s/mysqlpwd/${defpasswd}/g" /home/${defuser}/snipe-it/app/config/production/database.php
 echo "Done"
 echo ""
 
 # Configure snipe-it app.php file - hostname used literally
 echo "Configuring app.php hostname..."
-echo ""
 hstname=$(hostname)
 sed -i "s/replaceserver/${hstname}/g" /home/${defuser}/snipe-it/app/config/production/app.php
 echo "Done"
@@ -207,7 +205,6 @@ echo ""
 
 # Configure httpd virtualhost
 echo "Configuring VirtuaHost..."
-echo ""
 sed -i "s/replaceroot/${defuser}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 sed -i "s/replaceserver/${hstname}/g" /etc/httpd/conf.d/snipeit-httpd.conf
 echo "Done"
@@ -233,7 +230,6 @@ echo ""
 
 # Install Dependencies - requires sudo
 echo "Installing dependencies..."
-echo ""
 cd /home/${defuser}/snipe-it
 curl -sS https://getcomposer.org/installer | php
 php composer.phar install --no-dev --prefer-source

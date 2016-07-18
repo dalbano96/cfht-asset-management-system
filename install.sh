@@ -107,7 +107,7 @@ then
 
 	# Import database and set app key
 	sudo yum -y install unzip
-	cd /home/snipeuser-it/snipe-it/app/storage/dumps
+	cd /home/${defuser}/snipe-it/app/storage/dumps
 	
 	# User selects file
 	prompt="Please select a file:"
@@ -127,13 +127,13 @@ then
 	ls -ld $opt	
 
 	# Unzip file and store output as text file
-	unzip $opt > output.txt
+	unzip $opt > /home/${defuser}/snipe-it/output.txt
 	
 	# Retrieve unzipped filname
-	mysqlfile=`awk -F '/' 'NR==2 {print $2}' output.txt`
+	mysqlfile=`awk -F '/' 'NR==2 {print $2}' /home/${defuser}/snipe-it/output.txt`
 	
 	# Import into MySQL and Snipe-IT
-	###mysql -u root -p
+	mysql -u root -p${defpasswd} ${dbname} < /home/${defuser}/snipe-it/app/storage/dumps/database/${mysqlfile}
 
 	origappkey=QiARACtvQRMK3D7oc3XdKb6Zp5WR5sUv
 	sed -i "s/Change_this_key_or_snipe_will_get_ya/${origappkey}/g" /home/${defuser}/snipe-it/app/config/production/app.php

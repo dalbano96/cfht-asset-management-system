@@ -1,4 +1,4 @@
-# cfht_asset_management
+# CFHT Asset Management
 Asset management system for the Canada France Hawaii Telescope. Snipe-IT web application developed by Snipe
 # Running the Installation script
 

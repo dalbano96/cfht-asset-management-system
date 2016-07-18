@@ -238,8 +238,6 @@ then
 	echo Installing application
 	cd /home/${defuser}/snipe-it
 	php artisan app:install --env=production
-
-else break
 fi
 
 

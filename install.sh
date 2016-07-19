@@ -15,7 +15,7 @@ sudo systemctl start mariadb.service
 echo ""
 echo "Installing PHP libraries..."
 echo ""
-sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl
+sudo yum -y install php php-mysql php-mcrypt php-pdo php-mbstring php-curl php-ldap
 echo ""
 echo "Installing mod_ssl"
 echo ""

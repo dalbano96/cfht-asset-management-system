@@ -85,6 +85,10 @@ then
         echo ""
         echo "Password successfully changed to default password!"
         echo ""
+	echo "Cleaning up databases..."
+	mysql -u root -p${defpasswd} -e "DROP DATABASE ${dbname};"
+	echo "Done"
+	echo "" 
         echo "Creating database..."
         mysql -u root -p${defpasswd} -e "CREATE DATABASE ${dbname};"
         if [ "$?" -eq 0 ];
@@ -164,6 +168,9 @@ then
 	echo ""
 	echo "Password successfully changed to default password!"
 	echo ""
+	echo "Cleaning up databases..."
+	mysql -u root -p${defpasswd} -e "DROP DATABASE ${dbname};"
+	echo "Done"
 	echo "Creating database..."
 	mysql -u root -p${defpasswd} -e "CREATE DATABASE ${dbname};"
 	if [ "$?" -eq 0 ];

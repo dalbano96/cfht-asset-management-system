@@ -44,6 +44,8 @@ echo "Importing sudoers file"
 cp -f config/sudoers /etc
 echo "Importing iptables config"
 cp -f config/iptables /etc/sysconfig
+echo "Importing crontab file"
+cp -f config/crontab /etc/crontab
 
 # restarting httpd, iptables, and mariadb
 sudo systemctl restart httpd.service

@@ -13,9 +13,9 @@
         }
     .label{
         /* Avery 5160 labels -- CSS and HTML by MM at Boulder Information Services */
-        width: 3.25in; /* plus .6 inches from padding */
-        height: .94in; /* plus .125 inches from padding */
-	padding: .08in;
+        width: 2.5in; /* plus .6 inches from padding */
+        height: .92in; /* plus .125 inches from padding */
+	padding: .1in;
 	//margin: .08in;
        // padding: .4in .4in .4in .4in;
        // margin-right: .125in; /* the gutter */
@@ -33,16 +33,9 @@
        	 }
 	.qr_img {
 		float: right;
-		//margin-left: .12in;
 		height: .7in;
 		width: .7in;
-		//padding-top: .12in;
-		//padding-bottom: .12in;
-		//margin-top: .12in;
-		//margin-bottom: .12in;
-		//max-width: 30%;
-		//max-height: auto;
-		
+		padding-top: .08in;
 	    }
 
 	 .qr_text {
@@ -50,11 +43,12 @@
 		font-family: arial, helvetica, sans-serif;
 		font-size: 7pt;
 		padding-right: .1in;
-		margin-top: .12in;
+		padding-top: .08in;
+		padding-left: .08in;
 	    }
 
 @page {
-	width: 3.5in;
+	width: 2.5in;
 	margin-left: 0px;
 	margin-right: 0px;
 	margin-top: 0px;
@@ -64,16 +58,20 @@
 
 @media print {	
 	.label {
-		width: 4.5in;
+		width: 3.5in;
+		padding: .1in;
 	}
 	
 	.qr_img {
 		width: 1in;
 		height: 1in;
+		padding-top: .08in;
+		padding-right: .08in;
 	}
 
 	.qr_text {
-		font-size: 11pt;
+		font-size: 9pt;
+		
 	}
 }
 
@@ -90,7 +88,7 @@
 	<div class="label">
 		<div class="qr_img"><img src="./{{{ $asset->id }}}/qr_code"; width=100%; height=100%;></div>
 		<div class="qr_text">
-			<b>Property of Canada France Hawaii Telescope</b>
+			<b>Property of <br>Canada-France-Hawaii Telescope</b>
 			<br>
 			<b>Phone: (808) 885-7944</b>
 			<br>

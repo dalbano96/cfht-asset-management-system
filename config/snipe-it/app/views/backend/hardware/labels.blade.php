@@ -68,8 +68,8 @@
 	}
 	
 	.qr_img {
-		width: 1.1in;
-		height: 1.1in;
+		width: 1in;
+		height: 1in;
 	}
 
 	.qr_text {

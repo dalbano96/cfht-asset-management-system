@@ -36,8 +36,8 @@
 		//margin-left: .12in;
 		height: .7in;
 		width: .7in;
-		padding-top: .12in;
-		padding-bottom: .12in;
+		//padding-top: .12in;
+		//padding-bottom: .12in;
 		//margin-top: .12in;
 		//margin-bottom: .12in;
 		//max-width: 30%;
@@ -68,8 +68,8 @@
 	}
 	
 	.qr_img {
-		width: .9in;
-		height: .9in;
+		width: 1.1in;
+		height: 1.1in;
 	}
 
 	.qr_text {

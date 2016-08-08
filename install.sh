@@ -1,3 +1,6 @@
+# Installation script to install and configure asset management system
+
+
 #!/bin/sh
 
 # install lamp stack and other php libraries

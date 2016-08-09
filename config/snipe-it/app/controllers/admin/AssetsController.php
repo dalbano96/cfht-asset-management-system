@@ -1144,7 +1144,21 @@ class AssetsController extends AdminController
             return Redirect::to("hardware")->with('error','Barcodes are not enabled in Admin > Settings');
           }
 
-      } elseif (Input::get('bulk_actions')=='delete') {
+	}       elseif (Input::get('bulk_actions')=='wraplabels') {
+		$settings = Setting::getSettings();
+		if ($settings->qr_code=='1') {
+			$assets = Asset::find($asset_ids);
+			$assetcount = count($assets);
+			$count = 0;
+			return View::make('backend/hardware/wraplabels')->with('assets',$assets)->with('settings',$settings)->with('count',$count);
+
+		} else {
+			return Redirect::to("hardware")->with('error','Barcodes are not enabled in Admin > Settings');
+		}
+	}
+		
+
+	elseif (Input::get('bulk_actions')=='delete') {
 
 
         $assets = Asset::with('assigneduser','assetloc')->find($asset_ids);

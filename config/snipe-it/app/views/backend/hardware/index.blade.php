@@ -101,7 +101,8 @@
                     <select name="bulk_actions">
                         <option value="edit">Edit</option>
                         <option value="delete">Delete</option>
-                        <option value="labels">Generate Labels</option>
+                        <option value="labels">Generate Flat Labels</option>
+			<option value="wraplabels">Generate Wrap Labels</option>
                     </select>
                     <button class="btn btn-default" id="bulkEdit" disabled>Go</button>
                 </td>

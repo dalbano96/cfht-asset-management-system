@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Flat Labels</title>
+    <title>Wrap Labels</title>
     <link href="labels.css" rel="stylesheet" type="text/css" >
     <style>
     body {
@@ -44,7 +44,7 @@
 	    }
 
 @page {
-	width: 2.5in;
+	width: 5.5in;
 	margin-left: 0px;
 	margin-right: 0px;
 	margin-top: 0px;
@@ -54,7 +54,7 @@
 
 @media print {	
 	.label {
-		width: 3.5in;
+		width: 6.25in;
 		padding: .1in;
 	}
 	
